@@ -1,0 +1,9 @@
+# Ignora arquivos que não precisam ser copiados pro container
+*.md
+*.log
+__pycache__/
+.env
+.vscode/
+.idea/
+data/
+config/jobs/
