@@ -1,14 +1,29 @@
-version: '3'
-
 services:
   db:
     image: postgres:12
+    container_name: db
     environment:
       POSTGRES_DB: northwind
       POSTGRES_USER: northwind_user
       POSTGRES_PASSWORD: thewindisblowing
-    volumes:
-      - ./dbdata:/var/lib/postgresql/data
-      - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
     ports:
-      - 5432:5432
+      - "5432:5432"
+    volumes:
+      - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
+      - postgres_data:/var/lib/postgresql/data  # volume nomeado
+
+  extract-postgres-embulk:
+    build: ./extract-postgres-embulk
+    container_name: extract-postgres-embulk
+    volumes:
+      - ./data:/data
+      - ./extract-postgres-embulk:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
+
+# volumes nomeados
+volumes:
+  postgres_data:
