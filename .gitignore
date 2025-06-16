@@ -1,0 +1,25 @@
+# Bytecode e artefatos
+__pycache__/
+*.py[cod]
+*.class
+*.jar
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+
+# Ambientes e builds
+.env
+*.log
+*.bak
+*.tmp
+
+# Docker
+dbdata/
+**/config/jobs/
+**/data/
+**/tmp/
+
+# Airflow ou outros orchestrators (se incluir depois)
+airflow/logs/
