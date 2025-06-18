@@ -1,32 +1,62 @@
-.PHONY: up down build extract_postgres logs_psql reset_all clean_data clean_jobs
+.PHONY: \
+	up down build build_csv build_embulk build_all \
+	extract_postgres extract_csv extract_all \
+	logs_psql \
+	clean_data clean_jsonl clean_jobs clean_csv_dir clean_all \
+	reset_all reset_csv
 
-# Sobe todos os serviços com rebuild forçado
+# 🔧 Infraestrutura
+
 up:
 	docker compose up -d --build
 
-# Derruba todos os serviços e remove volumes e orfãos
 down:
 	docker compose down -v --remove-orphans
 
-# Rebuild do container de extração apenas
 build:
+	docker compose build --no-cache
+
+build_all: build_csv build_embulk
+
+build_csv:
+	docker compose build --no-cache extract-csv-meltano
+
+build_embulk:
 	docker compose build --no-cache extract-postgres-embulk
 
-# Executa a extração completa via Embulk (entrypoint padrão)
+# 🚀 Execuções
+
 extract_postgres:
 	docker exec -it extract-postgres-embulk sh ./entrypoint.sh
 
-# Acessa o psql no banco Northwind
+extract_csv:
+	docker exec -it extract-csv-meltano sh ./entrypoint.sh
+
+extract_all: extract_postgres extract_csv
+
+# 🔍 Acesso ao banco
+
 logs_psql:
 	docker exec -it db psql -U northwind_user -d northwind
 
-# Limpa a pasta de dados gerados (CSV)
+# 🧹 Limpeza
+
 clean_data:
 	sudo rm -rf ./data/postgres
 
-# Limpa os YAMLs de job gerados
+clean_jsonl:
+	sudo find ./data/csv -type f -name "*.jsonl" -delete
+
+clean_csv_dir:
+	sudo rm -rf ./data/csv
+
 clean_jobs:
 	sudo rm -rf ./extract-postgres-embulk/config/jobs
 
-# Reset completo: apaga volumes, dados e jobs
-reset_all: down clean_data clean_jobs
+clean_all: clean_data clean_jsonl clean_csv_dir clean_jobs
+
+# 💣 Reset
+
+reset_all: down clean_all
+
+reset_csv: down clean_jsonl clean_csv_dir
