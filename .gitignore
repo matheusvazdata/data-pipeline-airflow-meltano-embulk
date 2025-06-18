@@ -24,5 +24,6 @@ dbdata/
 # Airflow ou outros orchestrators (se incluir depois)
 airflow/logs/
 
-# Meltano e logs
+# Ignora metadados gerados pelo setuptools
+*.egg-info/
 .meltano

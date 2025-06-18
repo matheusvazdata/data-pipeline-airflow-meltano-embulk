@@ -1,0 +1,10 @@
+setup.py
+src/tap_northwindcsv/__init__.py
+src/tap_northwindcsv/stream.py
+src/tap_northwindcsv/tap.py
+src/tap_northwindcsv.egg-info/PKG-INFO
+src/tap_northwindcsv.egg-info/SOURCES.txt
+src/tap_northwindcsv.egg-info/dependency_links.txt
+src/tap_northwindcsv.egg-info/entry_points.txt
+src/tap_northwindcsv.egg-info/requires.txt
+src/tap_northwindcsv.egg-info/top_level.txt
