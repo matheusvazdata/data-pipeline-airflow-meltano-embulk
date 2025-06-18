@@ -1,0 +1,23 @@
+version: 1
+project_id: 0738f119-ca86-4eac-8e5e-3d2d5a1c8e0a
+default_environment: dev
+
+environments:
+  - name: dev
+
+plugins:
+  extractors:
+    - name: tap-northwindcsv
+      namespace: tap_northwindcsv
+      executable: tap-northwindcsv
+      pip_url: -e plugins/extractors/tap-northwindcsv
+      capabilities:
+        - discover
+      config:
+        csv_path: /data/order_details.csv
+
+  loaders:
+    - name: target-jsonl
+      namespace: target_jsonl
+      variant: andyh1203
+      pip_url: target-jsonl
