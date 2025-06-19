@@ -1,4 +1,5 @@
 services:
+  # Banco de origem (extração)
   db:
     image: postgres:12
     container_name: db
@@ -7,11 +8,25 @@ services:
       POSTGRES_USER: northwind_user
       POSTGRES_PASSWORD: thewindisblowing
     ports:
-      - "5432:5432"
+      - "15432:5432"
     volumes:
       - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
       - postgres_data:/var/lib/postgresql/data  # volume nomeado
 
+  # Banco de destino (carga final)
+  db-dest:
+    image: postgres:12
+    container_name: db-dest
+    environment:
+      POSTGRES_DB: dest_db
+      POSTGRES_USER: dest_user
+      POSTGRES_PASSWORD: dest_pass
+    ports:
+      - "15433:5432"
+    volumes:
+      - pgdata-dest:/var/lib/postgresql/data
+
+  # Container Embulk (extração do banco)
   extract-postgres-embulk:
     build: ./extract-postgres-embulk
     container_name: extract-postgres-embulk
@@ -24,6 +39,7 @@ services:
       - db
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
+  # Container Meltano (extração do CSV)
   extract-csv-meltano:
     build: ./extract-csv-meltano
     container_name: extract-csv-meltano
@@ -36,6 +52,25 @@ services:
       - db
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
-# volumes nomeados
+  # Container Meltano (carga do JSONL para o novo PostgreSQL)
+  load-jsonl-meltano:
+    build:
+      context: ./load-jsonl-meltano
+    container_name: load-jsonl-meltano
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    environment:
+      # Banco de destino
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+    entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
+
+# Volumes nomeados
 volumes:
   postgres_data:
+  pgdata-dest:
