@@ -1,12 +1,12 @@
 .PHONY: \
-	up down build build_csv build_embulk build_load build_all \
+	up down build build_csv build_embulk build_jsonl build_all \
 	extract_postgres extract_csv extract_all \
 	load_jsonl load_all run_all \
-	logs_psql \
+	logs_psql logs_dest \
 	clean_data clean_jsonl clean_jobs clean_csv_dir clean_all \
 	reset_all reset_csv
 
-# 🔧 Infraestrutura
+# Infraestrutura
 
 up:
 	docker compose up -d --build
@@ -17,7 +17,7 @@ down:
 build:
 	docker compose build --no-cache
 
-build_all: build_csv build_embulk build_load
+build_all: build_csv build_embulk build_jsonl
 
 build_csv:
 	docker compose build --no-cache extract-csv-meltano
@@ -28,7 +28,7 @@ build_embulk:
 build_jsonl:
 	docker compose build --no-cache load-jsonl-meltano
 
-# 🚀 Execuções
+# Execução da pipeline
 
 extract_postgres:
 	docker exec -it extract-postgres-embulk sh ./entrypoint.sh
@@ -45,12 +45,15 @@ load_all: load_jsonl
 
 run_all: extract_all load_all
 
-# 🔍 Acesso ao banco
+# Acesso aos bancos
 
 logs_psql:
 	docker exec -it db psql -U northwind_user -d northwind
 
-# 🧹 Limpeza
+logs_dest:
+	docker exec -it db-dest psql -U dest_user -d dest_db
+
+# Limpeza de artefatos locais
 
 clean_data:
 	sudo rm -rf ./data/postgres
@@ -66,7 +69,7 @@ clean_jobs:
 
 clean_all: clean_data clean_jsonl clean_csv_dir clean_jobs
 
-# 💣 Reset
+# Reset completo da execução local
 
 reset_all: down clean_all
 
