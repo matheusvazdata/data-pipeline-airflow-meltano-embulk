@@ -7,11 +7,7 @@ class TapNorthwindCSV(Tap):
     name = "tap-northwindcsv"
 
     config_jsonschema = th.PropertiesList(
-        th.Property(
-            "csv_path",
-            th.StringType,
-            description="Path para o arquivo CSV de entrada"
-        )
+        th.Property("csv_path", th.StringType, required=True),
     ).to_dict()
 
     def discover_streams(self):

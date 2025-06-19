@@ -1,6 +1,7 @@
 .PHONY: \
-	up down build build_csv build_embulk build_all \
+	up down build build_csv build_embulk build_load build_all \
 	extract_postgres extract_csv extract_all \
+	load_jsonl load_all run_all \
 	logs_psql \
 	clean_data clean_jsonl clean_jobs clean_csv_dir clean_all \
 	reset_all reset_csv
@@ -16,13 +17,16 @@ down:
 build:
 	docker compose build --no-cache
 
-build_all: build_csv build_embulk
+build_all: build_csv build_embulk build_load
 
 build_csv:
 	docker compose build --no-cache extract-csv-meltano
 
 build_embulk:
 	docker compose build --no-cache extract-postgres-embulk
+
+build_jsonl:
+	docker compose build --no-cache load-jsonl-meltano
 
 # 🚀 Execuções
 
@@ -33,6 +37,13 @@ extract_csv:
 	docker exec -it extract-csv-meltano sh ./entrypoint.sh
 
 extract_all: extract_postgres extract_csv
+
+load_jsonl:
+	docker exec -it load-jsonl-meltano sh ./entrypoint.sh
+
+load_all: load_jsonl
+
+run_all: extract_all load_all
 
 # 🔍 Acesso ao banco
 
