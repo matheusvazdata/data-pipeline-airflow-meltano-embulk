@@ -1,6 +1,7 @@
 import csv
 from singer_sdk import Stream
-from singer_sdk.typing import PropertiesList, Property, IntegerType, NumberType, StringType
+from singer_sdk.typing import PropertiesList, Property, IntegerType, NumberType
+
 
 class OrderDetailsStream(Stream):
     name = "order_details"
@@ -14,6 +15,16 @@ class OrderDetailsStream(Stream):
         Property("quantity", IntegerType),
         Property("discount", NumberType),
     ).to_dict()
+
+    @property
+    def is_schema_defined(self) -> bool:
+        """Informa ao SDK que o schema está definido e deve ser emitido."""
+        return True
+
+    @property
+    def supports_incremental(self) -> bool:
+        """Indica que não há suporte a incremental."""
+        return False
 
     def get_records(self, context):
         path = self.config["csv_path"]
