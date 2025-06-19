@@ -1,0 +1,11 @@
+version: 1
+default_environment: dev
+environments:
+  - name: dev
+
+plugins:
+ loaders:
+  - name: target-postgres-custom
+    namespace: target_postgres_custom
+    executable: target-postgres-custom
+    pip_url: -e plugins/loaders/target-postgres-custom
