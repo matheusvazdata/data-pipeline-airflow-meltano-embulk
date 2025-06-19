@@ -1,0 +1,1 @@
+# Arquivo de inicialização do módulo target_postgres_custom
