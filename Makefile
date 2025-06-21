@@ -17,7 +17,7 @@ down:
 build:
 	docker compose build --no-cache
 
-build_all: build_csv build_embulk build_jsonl
+build_all: build_csv build_embulk build_jsonl build_csv_embulk
 
 build_csv:
 	docker compose build --no-cache extract-csv-meltano
@@ -27,6 +27,9 @@ build_embulk:
 
 build_jsonl:
 	docker compose build --no-cache load-jsonl-meltano
+
+build_csv_embulk:
+	docker compose build --no-cache load-csv-embulk
 
 # Execução da pipeline
 
@@ -41,7 +44,10 @@ extract_all: extract_postgres extract_csv
 load_jsonl:
 	docker exec -it load-jsonl-meltano sh ./entrypoint.sh
 
-load_all: load_jsonl
+load_csv_embulk:
+	docker exec -it load-csv-embulk sh ./entrypoint.sh
+
+load_all: load_jsonl load_csv_embulk
 
 run_all: extract_all load_all
 
