@@ -1,0 +1,17 @@
+in:
+  type: file
+  path_prefix: ${CSV_FILE}
+  parser:
+    type: csv
+    charset: UTF-8
+    delimiter: ","
+    skip_header_lines: 1
+
+out:
+  type: postgresql
+  host: ${PG_HOST}
+  user: ${PG_USER}
+  password: ${PG_PASSWORD}
+  database: ${PG_DATABASE}
+  table: ${TABLE_NAME}
+  mode: insert
