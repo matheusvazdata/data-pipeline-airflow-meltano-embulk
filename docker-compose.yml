@@ -70,6 +70,18 @@ services:
       PG_PASSWORD: ${PG_PASSWORD}
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
+  load-csv-embulk:
+    build:
+      context: ./load-csv-embulk
+    container_name: load-csv-embulk
+    volumes:
+      - ./data:/app/data
+      - ./load-csv-embulk:/app
+    env_file: .env
+    depends_on:
+      - db-dest
+    entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
+
 # Volumes nomeados
 volumes:
   postgres_data:
