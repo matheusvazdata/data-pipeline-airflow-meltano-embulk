@@ -1,10 +1,10 @@
 .PHONY: \
-	up down build build_csv build_embulk build_jsonl build_all \
+	up down build build_csv build_embulk build_jsonl build_csv_embulk build_all \
 	extract_postgres extract_csv extract_all \
-	load_jsonl load_all run_all \
+	load_jsonl load_csv_embulk load_all run_all \
 	logs_psql logs_dest \
-	clean_data clean_jsonl clean_jobs clean_csv_dir clean_all \
-	reset_all reset_csv
+	clean_data clean_jsonl clean_csv_dir clean_jobs clean_csv_jobs clean_all \
+	reset_all reset_csv count_tables_dest
 
 # Infraestrutura
 
@@ -59,6 +59,10 @@ logs_psql:
 logs_dest:
 	docker exec -it db-dest psql -U dest_user -d dest_db
 
+count_tables_dest:
+	docker exec -it db-dest psql -U dest_user -d dest_db -c \
+	"SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
+
 # Limpeza de artefatos locais
 
 clean_data:
@@ -71,9 +75,12 @@ clean_csv_dir:
 	sudo rm -rf ./data/csv
 
 clean_jobs:
-	sudo rm -rf ./extract-postgres-embulk/config/jobs
+	@echo "Nenhum job a limpar em extract-postgres-embulk (diretório removido ou não utilizado)."
 
-clean_all: clean_data clean_jsonl clean_csv_dir clean_jobs
+clean_csv_jobs:
+	sudo rm -rf ./load-csv-embulk/config/jobs
+
+clean_all: clean_data clean_jsonl clean_csv_dir clean_jobs clean_csv_jobs
 
 # Reset completo da execução local
 
