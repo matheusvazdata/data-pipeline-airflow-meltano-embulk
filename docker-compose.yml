@@ -11,7 +11,7 @@ services:
       - "15432:5432"
     volumes:
       - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
-      - postgres_data:/var/lib/postgresql/data  # volume nomeado
+      - postgres_data:/var/lib/postgresql/data
 
   # Banco de destino (carga final)
   db-dest:
@@ -26,7 +26,7 @@ services:
     volumes:
       - pgdata-dest:/var/lib/postgresql/data
 
-  # Container Embulk (extração do banco)
+  # Extração do banco via Embulk
   extract-postgres-embulk:
     build: ./extract-postgres-embulk
     container_name: extract-postgres-embulk
@@ -39,7 +39,7 @@ services:
       - db
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
-  # Container Meltano (extração do CSV)
+  # Extração do CSV via Meltano
   extract-csv-meltano:
     build: ./extract-csv-meltano
     container_name: extract-csv-meltano
@@ -52,7 +52,7 @@ services:
       - db
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
-  # Container Meltano (carga do JSONL para o novo PostgreSQL)
+  # Carga JSONL via Meltano
   load-jsonl-meltano:
     build:
       context: ./load-jsonl-meltano
@@ -62,7 +62,6 @@ services:
     volumes:
       - ./data:/data
     environment:
-      # Banco de destino
       PG_HOST: ${PG_HOST}
       PG_PORT: ${PG_PORT}
       PG_DATABASE: ${PG_DATABASE}
@@ -70,6 +69,7 @@ services:
       PG_PASSWORD: ${PG_PASSWORD}
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
+  # Carga CSV via Embulk
   load-csv-embulk:
     build:
       context: ./load-csv-embulk
@@ -82,7 +82,28 @@ services:
       - db-dest
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
-# Volumes nomeados
+  # Orquestração com Airflow
+  orchestrate-airflow:
+    build: ./orchestrate-airflow
+    container_name: orchestrate-airflow
+    user: root  # 👈 Permite usar docker exec dentro do container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./orchestrate-airflow/dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./Makefile:/opt/airflow/Makefile
+      - /var/run/docker.sock:/var/run/docker.sock  # 👈 Permite executar comandos docker dentro do container
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+        exec airflow standalone
+      "
+
 volumes:
   postgres_data:
   pgdata-dest:
