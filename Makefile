@@ -34,18 +34,18 @@ build_csv_embulk:
 # Execução da pipeline
 
 extract_postgres:
-	docker exec -it extract-postgres-embulk sh ./entrypoint.sh
+	docker exec extract-postgres-embulk sh ./entrypoint.sh
 
 extract_csv:
-	docker exec -it extract-csv-meltano sh ./entrypoint.sh
+	docker exec extract-csv-meltano sh ./entrypoint.sh
 
 extract_all: extract_postgres extract_csv
 
 load_jsonl:
-	docker exec -it load-jsonl-meltano sh ./entrypoint.sh
+	docker exec load-jsonl-meltano sh ./entrypoint.sh
 
 load_csv_embulk:
-	docker exec -it load-csv-embulk sh ./entrypoint.sh
+	docker exec load-csv-embulk sh ./entrypoint.sh
 
 load_all: load_jsonl load_csv_embulk
 
