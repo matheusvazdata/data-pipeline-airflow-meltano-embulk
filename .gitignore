@@ -27,4 +27,4 @@ airflow/logs/
 # Ignora metadados gerados pelo setuptools
 tap_northwindcsv.egg-info/
 .meltano
-.egg-info/
+.egg-info/*/tap_northwindcsv.egg-info/
