@@ -1,3 +1,0 @@
-[console_scripts]
-tap-northwindcsv = tap_northwindcsv.tap:main
-
