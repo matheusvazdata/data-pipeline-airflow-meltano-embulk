@@ -1,6 +1,15 @@
 #!/bin/sh
 set -eu
 
+# ---------------------------------------------
+# Limpa variável DATABRICKS_JOB_ID do .env após execução
+# ---------------------------------------------
+ENV_PATH="/app/.env"
+if grep -q "^DATABRICKS_JOB_ID=" "$ENV_PATH"; then
+  echo "[INFO] Removendo DATABRICKS_JOB_ID do .env..."
+  sed -i '/^DATABRICKS_JOB_ID=/d' "$ENV_PATH"
+fi
+
 ACTION="${1:-apply}"
 
 echo "[INFO] Ação: $ACTION"
@@ -51,33 +60,23 @@ else
   terraform apply -auto-approve
 
   # -------------------------------
-  # Salva o Job ID no .env de forma segura
+  # Atualiza Job ID no .env (sem sobrescrever)
   # -------------------------------
   echo "[INFO] Extraindo Job ID e atualizando variável DATABRICKS_JOB_ID no .env..."
 
   JOB_ID=$(terraform output -raw job_id)
 
-  # Garante quebra de linha final para evitar concatenação de variáveis
+  # Garante quebra de linha no final do arquivo, evitando concatenação
   tail -c1 "$ENV_PATH" | read -r _ || echo >> "$ENV_PATH"
 
-  # Atualiza a variável DATABRICKS_JOB_ID diretamente no arquivo
-  awk -v jobid="$JOB_ID" '
-  BEGIN { updated = 0 }
-  {
-    if ($0 ~ /^DATABRICKS_JOB_ID=/) {
-      print "DATABRICKS_JOB_ID=" jobid
-      updated = 1
-    } else {
-      print $0
-    }
-  }
-  END {
-    if (updated == 0) {
-      print "DATABRICKS_JOB_ID=" jobid
-    }
-  }' "$ENV_PATH" | tee "$ENV_PATH" > /dev/null
+  # Se a variável já existir, atualiza; senão, adiciona ao final
+  if grep -q "^DATABRICKS_JOB_ID=" "$ENV_PATH"; then
+    sed -i "s/^DATABRICKS_JOB_ID=.*/DATABRICKS_JOB_ID=${JOB_ID}/" "$ENV_PATH"
+  else
+    echo "DATABRICKS_JOB_ID=${JOB_ID}" >> "$ENV_PATH"
+  fi
 
-  echo "[INFO] DATABRICKS_JOB_ID atualizado com sucesso: $JOB_ID"
+  echo "[INFO] DATABRICKS_JOB_ID atualizado no .env: $JOB_ID"
 fi
 
 # -------------------------------
