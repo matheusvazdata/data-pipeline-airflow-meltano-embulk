@@ -1,107 +1,83 @@
 .PHONY: \
-	up down build build_csv build_embulk build_jsonl build_csv_embulk build_all \
+	up down build \
+	build_csv build_embulk build_databricks build_terraform build_all \
 	extract_postgres extract_csv extract_all \
-	load_jsonl load_csv_embulk load_all run_all \
-	logs_psql logs_dest \
-	clean_data clean_jsonl clean_csv_dir clean_jobs clean_csv_jobs clean_all \
-	reset_all reset_csv count_tables_dest
+	load_databricks run_all \
+	provision_infra destroy_infra \
+	run_pipeline \
+	logs_psql \
+	clean_data reset_all
 
-# Infraestrutura
-
+# Infraestrutura com Docker
 up:
-	@echo "Subindo todos os containers com build atualizado..."
+	@echo "🔧 Subindo todos os containers com build atualizado..."
 	docker compose up -d --build
 
 down:
-	@echo "Derrubando todos os containers e removendo volumes e órfãos..."
+	@echo "🧹 Derrubando todos os containers e removendo volumes e órfãos..."
 	docker compose down -v --remove-orphans
 
 build:
-	@echo "Executando build completo dos containers sem cache..."
+	@echo "🛠️ Build completo dos containers sem cache..."
 	docker compose build --no-cache
 
-build_all: build_csv build_embulk build_jsonl build_csv_embulk
+build_all: build_csv build_embulk build_databricks build_terraform
 
 build_csv:
-	@echo "Build do container extract-csv-meltano (extração via Meltano)..."
-	docker compose build --no-cache extract-csv-meltano
+	@echo "📦 Build do container 01_extract_csv_meltano (extração via Meltano)..."
+	docker compose build --no-cache 01_extract_csv_meltano
 
 build_embulk:
-	@echo "Build do container extract-postgres-embulk (extração via Embulk)..."
-	docker compose build --no-cache extract-postgres-embulk
+	@echo "📦 Build do container 02_extract_postgres_embulk (extração via Embulk)..."
+	docker compose build --no-cache 02_extract_postgres_embulk
 
-build_jsonl:
-	@echo "Build do container load-jsonl-meltano (carga de arquivos JSONL via Meltano)..."
-	docker compose build --no-cache load-jsonl-meltano
+build_databricks:
+	@echo "📦 Build do container 04_load_to_databricks (upload e job no Databricks)..."
+	docker compose build --no-cache 04_load_to_databricks
 
-build_csv_embulk:
-	@echo "Build do container load-csv-embulk (carga de arquivos CSV via Embulk)..."
-	docker compose build --no-cache load-csv-embulk
+build_terraform:
+	@echo "📦 Build do container 03_infra_provision_terraform (provisionamento no Databricks)..."
+	docker compose build --no-cache 03_infra_provision_terraform
 
-# Execução da pipeline
-
+# Extração de dados (fonte PostgreSQL e CSV)
 extract_postgres:
-	@echo "Executando extração de dados do banco PostgreSQL via Embulk..."
-	docker exec extract-postgres-embulk sh ./entrypoint.sh
+	@echo "📤 Executando extração de dados do banco PostgreSQL via Embulk..."
+	docker exec 02_extract_postgres_embulk sh ./entrypoint.sh
 
 extract_csv:
-	@echo "Executando extração do arquivo CSV via Meltano..."
-	docker exec extract-csv-meltano sh ./entrypoint.sh
+	@echo "📤 Executando extração do arquivo CSV via Meltano..."
+	docker exec 01_extract_csv_meltano sh ./entrypoint.sh
 
 extract_all: extract_postgres extract_csv
 
-load_jsonl:
-	@echo "Executando carga dos arquivos JSONL no PostgreSQL de destino..."
-	docker exec load-jsonl-meltano sh ./entrypoint.sh
+# Carga e execução no Databricks (upload + job runner)
+load_databricks:
+	@echo "🚀 Executando carga para o Databricks (upload + execução de job)..."
+	docker exec 04_load_to_databricks sh ./entrypoint.sh
 
-load_csv_embulk:
-	@echo "Executando carga dos arquivos CSV no PostgreSQL de destino via Embulk..."
-	docker exec load-csv-embulk sh ./entrypoint.sh
+run_all: extract_all load_databricks
 
-load_all: load_jsonl load_csv_embulk
+# Provisionamento via Terraform (Databricks)
+provision_infra:
+	@echo "Provisionando catálogo, schema, volume, notebook e job no Databricks via Terraform..."
+	docker exec 03_infra_provision_terraform sh ./entrypoint.sh apply
 
-run_all: extract_all load_all
+destroy_infra:
+	@echo "Destruindo infraestrutura no Databricks via Terraform..."
+	docker exec 03_infra_provision_terraform sh ./entrypoint.sh destroy
 
-# Acesso aos bancos
+# Pipeline ponta a ponta (infra + extração + carga)
+run_pipeline: provision_infra extract_all load_databricks
+	@echo "[FINALIZADO] Pipeline completo executado com sucesso!"
 
+# Acesso ao banco PostgreSQL de origem (modo interativo)
 logs_psql:
-	@echo "Abrindo terminal do banco PostgreSQL de origem (db)..."
+	@echo "Acessando banco PostgreSQL de origem (db)..."
 	docker exec -it db psql -U northwind_user -d northwind
 
-logs_dest:
-	@echo "Abrindo terminal do banco PostgreSQL de destino (db-dest)..."
-	docker exec -it db-dest psql -U dest_user -d dest_db
-
-count_tables_dest:
-	@echo "Listando as tabelas presentes no banco de destino..."
-	docker exec -it db-dest psql -U dest_user -d dest_db -c \
-	"SELECT table_name FROM information_schema.tables WHERE table_schema='public';"
-
 # Limpeza de artefatos locais
-
 clean_data:
-	@echo "Removendo diretório de dados extraídos do PostgreSQL..."
-	sudo rm -rf ./data/postgres
+	@echo "Removendo arquivos .parquet gerados no diretório /data..."
+	sudo find ./data -maxdepth 1 -type f -name "*.parquet" -delete
 
-clean_jsonl:
-	@echo "Removendo arquivos .jsonl da extração CSV..."
-	sudo find ./data/csv -type f -name "*.jsonl" -delete
-
-clean_csv_dir:
-	@echo "Removendo diretório completo da fonte CSV..."
-	sudo rm -rf ./data/csv
-
-clean_jobs:
-	@echo "Nenhum job a limpar em extract-postgres-embulk (diretório removido ou não utilizado)."
-
-clean_csv_jobs:
-	@echo "Removendo jobs gerados dinamicamente para carga via Embulk (CSV)..."
-	sudo rm -rf ./load-csv-embulk/config/jobs
-
-clean_all: clean_data clean_jsonl clean_csv_dir clean_jobs clean_csv_jobs
-
-# Reset completo da execução local
-
-reset_all: down clean_all
-
-reset_csv: down clean_jsonl clean_csv_dir
+reset_all: down clean_data

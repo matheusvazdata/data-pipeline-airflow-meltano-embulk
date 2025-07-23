@@ -1,30 +1,82 @@
-# Bytecode e artefatos
-__pycache__/
-*.py[cod]
-*.class
-*.jar
-
-# IDEs e editores
-.vscode/
-.idea/
-*.swp
-
-# Ambientes e builds
+# Arquivos sensíveis
 .env
+infra/.env
+**/.env
+
+# Volumes de dados compartilhados
+/data/
+data/
+data/*
+
+# Banco de dados PostgreSQL (volume)
+postgres_data/
+
+# Arquivos criados pelo Terraform
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Diretórios temporários do Terraform
+.terraform/
+infra/.terraform/
+**/.terraform/
+
+# Artefatos do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+*.log
+
+# Builds e cache do Docker
+**/Dockerfile~
+docker-compose.override.yml
+*.bak
+*.swp
+*.tmp
+*.old
+
+# Documentação ou arquivos auto-gerados
+docs/*.jpg
+docs/*.png
+docs/*.pdf
+
+# Relatórios ou arquivos de saída do Databricks CLI
+.dbcli/
+.databricks/
+
+# Logs do Airflow (se forem montados)
+logs/
+orchestrate-airflow/logs/
+
+# Cache de ferramentas Python ou Meltano
+.meltano/
+pip-wheel-metadata/
+venv/
+*.db
+
+# Arquivos temporários de scripts
+*.tmp
+*.temp
 *.log
 *.bak
-*.tmp
+*.out
 
-# Docker
-dbdata/
-**/config/jobs/
-**/data/
-**/tmp/
+# Node/npm (caso adicione UI depois)
+node_modules/
 
-# Airflow ou outros orchestrators (se incluir depois)
-airflow/logs/
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+*.sublime*
 
-# Ignora metadados gerados pelo setuptools
-tap_northwindcsv.egg-info/
-.meltano
-.egg-info/*/tap_northwindcsv.egg-info/
+# Arquivos compactados
+*.zip
+*.tar.gz
+*.tar
+*.gz
