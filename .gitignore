@@ -22,6 +22,7 @@ terraform.tfstate.backup
 .terraform/
 infra/.terraform/
 **/.terraform/
+terraform.tfvars
 
 # Artefatos do Python
 __pycache__/
