@@ -17,6 +17,8 @@ terraform.tfstate.backup
 *.tfstate
 *.tfstate.backup
 *.tfvars
+**/terraform.tfstate
+**/terraform.tfstate.backup
 
 # Diretórios temporários do Terraform
 .terraform/
