@@ -7,7 +7,7 @@ from pyspark.sql.types import StringType
 spark = SparkSession.builder.getOrCreate()
 
 # Caminho do volume no DBFS
-volume_path = "/Volumes/northwind/bronze/source"
+volume_path = "/Volumes/northwind/00_raw/source"
 
 # Lista os arquivos .parquet
 files = [f.path for f in dbutils.fs.ls(volume_path) if f.path.endswith(".parquet")]
@@ -26,6 +26,6 @@ for file_path in files:
     df.write.format("delta") \
         .mode("overwrite") \
         .option("overwriteSchema", "true") \
-        .saveAsTable(f"northwind.bronze.{table_name}")
+        .saveAsTable(f"northwind.00_raw.{table_name}")
 
-    print(f"[SUCESSO] Tabela northwind.bronze.{table_name} criada com sucesso.")
+    print(f"[SUCESSO] Tabela northwind.00_raw.{table_name} criada com sucesso.")

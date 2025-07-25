@@ -16,7 +16,7 @@ provider "databricks" {
 resource "databricks_schema" "schema" {
   name         = var.schema_name
   catalog_name = var.catalog_name
-  comment      = "Schema bronze para ingestão"
+  comment      = "Schema raw para ingestão"
 }
 
 # Volume dentro do schema

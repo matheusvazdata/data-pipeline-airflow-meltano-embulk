@@ -2,20 +2,18 @@
 set -eu
 
 # ---------------------------------------------
-# Limpa variável DATABRICKS_JOB_ID do .env após execução
+# Remove DATABRICKS_JOB_ID da raiz do projeto (../.env)
 # ---------------------------------------------
-ENV_PATH="/app/.env"
-if grep -q "^DATABRICKS_JOB_ID=" "$ENV_PATH"; then
-  echo "[INFO] Removendo DATABRICKS_JOB_ID do .env..."
-  sed -i '/^DATABRICKS_JOB_ID=/d' "$ENV_PATH"
+ROOT_ENV_PATH="../.env"
+if [ -f "$ROOT_ENV_PATH" ]; then
+  if grep -q "^DATABRICKS_JOB_ID=" "$ROOT_ENV_PATH"; then
+    echo "[INFO] Limpando DATABRICKS_JOB_ID do .env da raiz do projeto..."
+    sed -i '/^DATABRICKS_JOB_ID=/d' "$ROOT_ENV_PATH"
+  fi
 fi
 
-ACTION="${1:-apply}"
-
-echo "[INFO] Ação: $ACTION"
-echo "[INFO] Diretório atual: $(pwd)"
-
-# Caminho do .env compartilhado
+# ---------------------------------------------
+# Caminho interno no container
 ENV_PATH="/infra/.env"
 
 # -------------------------------
@@ -31,6 +29,13 @@ else
   echo "[ERRO] Arquivo .env não encontrado em $ENV_PATH"
   exit 1
 fi
+
+# -------------------------------
+# Lê argumento passado (default = apply)
+# -------------------------------
+ACTION="${1:-apply}"
+echo "[INFO] Ação: $ACTION"
+echo "[INFO] Diretório atual: $(pwd)"
 
 # -------------------------------
 # Gera arquivo terraform.tfvars
@@ -60,21 +65,29 @@ else
   terraform apply -auto-approve
 
   # -------------------------------
-  # Atualiza Job ID no .env (sem sobrescrever)
+  # Atualiza Job ID no .env (modo compatível com bind mounts)
   # -------------------------------
   echo "[INFO] Extraindo Job ID e atualizando variável DATABRICKS_JOB_ID no .env..."
 
   JOB_ID=$(terraform output -raw job_id)
 
-  # Garante quebra de linha no final do arquivo, evitando concatenação
+  # Garante quebra de linha no final do arquivo
   tail -c1 "$ENV_PATH" | read -r _ || echo >> "$ENV_PATH"
 
-  # Se a variável já existir, atualiza; senão, adiciona ao final
-  if grep -q "^DATABRICKS_JOB_ID=" "$ENV_PATH"; then
-    sed -i "s/^DATABRICKS_JOB_ID=.*/DATABRICKS_JOB_ID=${JOB_ID}/" "$ENV_PATH"
-  else
-    echo "DATABRICKS_JOB_ID=${JOB_ID}" >> "$ENV_PATH"
-  fi
+  echo "[INFO] Atualizando .env com redirecionamento via tee (100% seguro com bind mounts)..."
+
+  awk -v job_id="$JOB_ID" '
+    BEGIN { updated=0 }
+    /^DATABRICKS_JOB_ID=/ {
+      print "DATABRICKS_JOB_ID=" job_id
+      updated=1
+      next
+    }
+    { print }
+    END {
+      if (!updated) print "DATABRICKS_JOB_ID=" job_id
+    }
+  ' "$ENV_PATH" | tee "$ENV_PATH" > /dev/null
 
   echo "[INFO] DATABRICKS_JOB_ID atualizado no .env: $JOB_ID"
 fi
