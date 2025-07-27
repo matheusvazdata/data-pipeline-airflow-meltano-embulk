@@ -1,0 +1,48 @@
+name: 'northwind_dbt'
+version: '1.0.0'
+config-version: 2
+profile: 'northwind'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+dispatch:
+  - macro_namespace: dbt
+    search_order: ['northwind_dbt', 'dbt']
+
+models:
+  northwind_dbt:
+    +enabled: >
+      {{ false if target.name == 'samples' else true }}
+    +generate_schema_name: northwind_dbt.generate_schema_name
+    re_data_monitored: true
+
+    01_staging:
+      +materialized: ephemeral
+      +schema: 01_bronze
+      +tags: stg
+
+      csv:
+        +tags: stg
+
+      postgres:
+        +tags: stg
+
+    02_intermediate:
+      +materialized: view
+      +schema: 02_silver
+      +tags: int
+
+    03_marts:
+      +materialized: table
+      +schema: 03_gold
+      +tags: marts
