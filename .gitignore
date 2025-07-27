@@ -1,17 +1,17 @@
-# Arquivos sensíveis
+# Arquivos de variáveis e credenciais sensíveis
 .env
 infra/.env
 **/.env
 
-# Volumes de dados compartilhados
+# Dados locais e volumes compartilhados
 /data/
 data/
 data/*
 
-# Banco de dados PostgreSQL (volume)
+# Banco de dados PostgreSQL (volume docker)
 postgres_data/
 
-# Arquivos criados pelo Terraform
+# Arquivos gerados pelo terraform
 terraform.tfstate
 terraform.tfstate.backup
 *.tfstate
@@ -20,13 +20,13 @@ terraform.tfstate.backup
 **/terraform.tfstate
 **/terraform.tfstate.backup
 
-# Diretórios temporários do Terraform
+# Diretórios internos do terraform
 .terraform/
 infra/.terraform/
 **/.terraform/
 terraform.tfvars
 
-# Artefatos do Python
+# Artefatos e cache do python
 __pycache__/
 *.pyc
 *.pyo
@@ -34,8 +34,26 @@ __pycache__/
 *.egg-info/
 *.egg
 *.log
+venv/
+pip-wheel-metadata/
 
-# Builds e cache do Docker
+# Arquivos de cache e logs do meltano
+.meltano/
+.meltano/**
+
+# Cache do dbt e pacotes
+dbt_packages/
+target/
+manifest.json
+run_results.json
+*.db
+*.user.yml
+
+# Logs do airflow (se não forem versionados)
+logs/
+orchestrate-airflow/logs/
+
+# Arquivos de configuração e cache de docker
 **/Dockerfile~
 docker-compose.override.yml
 *.bak
@@ -43,43 +61,28 @@ docker-compose.override.yml
 *.tmp
 *.old
 
-# Documentação ou arquivos auto-gerados
+# Arquivos auto-gerados de documentação ou imagens
 docs/*.jpg
 docs/*.png
 docs/*.pdf
 
-# Relatórios ou arquivos de saída do Databricks CLI
+# Arquivos do databricks cli
 .dbcli/
 .databricks/
 
-# Logs do Airflow (se forem montados)
-logs/
-orchestrate-airflow/logs/
-
-# Cache de ferramentas Python ou Meltano
-.meltano/
-pip-wheel-metadata/
-venv/
-*.db
-
-# Arquivos temporários de scripts
-*.tmp
-*.temp
-*.log
-*.bak
-*.out
-
-# Node/npm (caso adicione UI depois)
+# Dependências frontend e editores
 node_modules/
-
-# IDEs
 .vscode/
 .idea/
 *.code-workspace
 *.sublime*
 
-# Arquivos compactados
+# Arquivos compactados e temporários
 *.zip
 *.tar.gz
 *.tar
 *.gz
+*.tmp
+*.temp
+*.bak
+*.out
