@@ -60,6 +60,18 @@ services:
       - .env
     entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
 
+  # Transformações com dbt
+  05_transform_dbt:
+    build: ./05_transform_dbt
+    container_name: 05_transform_dbt
+    volumes:
+      - ./05_transform_dbt:/app
+      - ./data:/data
+      - ./.env:/app/.env
+    env_file:
+      - .env
+    entrypoint: [ "sh", "-c", "while true; do sleep 3600; done" ]
+
   # Orquestração com Airflow
   orchestrate-airflow:
     build: ./orchestrate-airflow
