@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_postgres_suppliers
+    description: Tabela de staging que padroniza os dados da tabela "suppliers" da origem Postgres (Northwind).
+    columns:
+      - name: SupplierId
+        description: Identificador único do fornecedor.
+        tests:
+          - not_null
+          - unique
+
+      - name: CompanyName
+        description: Nome da empresa fornecedora.
+
+      - name: ContactName
+        description: Nome do responsável pelo contato.
+
+      - name: ContactTitle
+        description: Título ou cargo do contato.
+
+      - name: Address
+        description: Endereço do fornecedor.
+
+      - name: City
+        description: Cidade onde está localizado o fornecedor.
+
+      - name: Region
+        description: Região do fornecedor.
+
+      - name: PostalCode
+        description: Código postal do fornecedor.
+
+      - name: Country
+        description: País do fornecedor.
+
+      - name: Phone
+        description: Número de telefone de contato.
+
+      - name: Fax
+        description: Número de fax do fornecedor.
+
+      - name: Homepage
+        description: Página web oficial do fornecedor.

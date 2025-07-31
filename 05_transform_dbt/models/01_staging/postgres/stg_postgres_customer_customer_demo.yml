@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_postgres_customer_customer_demo
+    description: Tabela de staging que padroniza os dados da tabela "customer_customer_demo" da origem Postgres (Northwind).
+    columns:
+      - name: CustomerId
+        description: Identificador do cliente.
+        tests:
+          - not_null
+
+      - name: CustomerTypeId
+        description: Tipo de cliente utilizado para segmentação.
+        tests:
+          - not_null

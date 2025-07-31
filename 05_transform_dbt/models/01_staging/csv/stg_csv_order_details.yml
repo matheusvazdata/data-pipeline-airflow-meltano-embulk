@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: stg_csv_order_details
+    description: Tabela de staging que padroniza os dados da tabela "order_details" proveniente de arquivo CSV (Northwind).
+    columns:
+      - name: OrderId
+        description: Identificador do pedido relacionado à linha de detalhe.
+        tests:
+          - not_null
+
+      - name: ProductId
+        description: Identificador do produto presente no pedido.
+        tests:
+          - not_null
+
+      - name: UnitPrice
+        description: Preço unitário do produto na linha do pedido.
+
+      - name: Quantity
+        description: Quantidade do produto solicitada na linha do pedido.
+
+      - name: Discount
+        description: Porcentagem de desconto aplicada à linha do pedido.

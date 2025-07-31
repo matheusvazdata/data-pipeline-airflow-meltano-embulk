@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_postgres_region
+    description: Tabela de staging que padroniza os dados da tabela "region" da origem Postgres (Northwind).
+    columns:
+      - name: RegionId
+        description: Identificador único da região.
+        tests:
+          - not_null
+          - unique
+
+      - name: RegionDescription
+        description: Descrição textual da região.

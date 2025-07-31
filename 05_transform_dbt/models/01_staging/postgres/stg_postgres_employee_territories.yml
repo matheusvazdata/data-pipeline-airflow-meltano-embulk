@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_postgres_employee_territories
+    description: Tabela de staging que padroniza os dados da tabela "employee_territories" da origem Postgres (Northwind).
+    columns:
+      - name: EmployeeId
+        description: Identificador do funcionário atribuído ao território.
+        tests:
+          - not_null
+
+      - name: TerritoryId
+        description: Identificador do território designado ao funcionário.
+        tests:
+          - not_null

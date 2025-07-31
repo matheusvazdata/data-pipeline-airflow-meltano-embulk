@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: stg_postgres_categories
+    description: Tabela de staging que padroniza os dados da tabela "categories" da origem Postgres (Northwind).
+    columns:
+      - name: CategoryId
+        description: Identificador único da categoria.
+        tests:
+          - not_null
+          - unique
+
+      - name: CategoryName
+        description: Nome da categoria de produtos.
+        tests:
+          - not_null
+
+      - name: Description
+        description: Descrição detalhada da categoria.

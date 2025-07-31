@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: stg_postgres_territories
+    description: Tabela de staging que padroniza os dados da tabela "territories" da origem Postgres (Northwind).
+    columns:
+      - name: TerritoryId
+        description: Identificador único do território.
+        tests:
+          - not_null
+          - unique
+
+      - name: TerritoryDescription
+        description: Descrição textual do território.
+
+      - name: RegionId
+        description: Identificador da região associada ao território.
+        tests:
+          - not_null

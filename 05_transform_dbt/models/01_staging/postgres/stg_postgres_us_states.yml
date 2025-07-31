@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: stg_postgres_us_states
+    description: Tabela de staging que padroniza os dados da tabela "us_states" da origem Postgres (Northwind).
+    columns:
+      - name: StateId
+        description: Identificador único do estado dos EUA.
+        tests:
+          - not_null
+          - unique
+
+      - name: StateName
+        description: Nome do estado.
+
+      - name: StateAbbr
+        description: Abreviação de duas letras do estado.
+
+      - name: StateRegion
+        description: Região geográfica à qual o estado pertence.

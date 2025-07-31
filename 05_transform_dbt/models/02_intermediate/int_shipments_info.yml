@@ -1,0 +1,44 @@
+# models/02_intermediate/sales/int_shipments_info.yml
+
+version: 2
+
+models:
+  - name: int_shipments_info
+    description: >
+      Modelo intermediário que enriquece os pedidos com informações de transportadoras,
+      útil para análises de logística, entrega e performance de distribuição.
+    columns:
+      - name: OrderID
+        description: Identificador único do pedido.
+        tests:
+          - not_null
+
+      - name: ShippedDate
+        description: Data em que o pedido foi despachado.
+
+      - name: ShipVia
+        description: ID da transportadora responsável pela entrega.
+
+      - name: ShipName
+        description: Nome do destinatário ou local de envio.
+
+      - name: ShipAddress
+        description: Endereço para onde o pedido foi enviado.
+
+      - name: ShipCity
+        description: Cidade de entrega.
+
+      - name: ShipRegion
+        description: Região de entrega.
+
+      - name: ShipPostalCode
+        description: Código postal de entrega.
+
+      - name: ShipCountry
+        description: País de entrega.
+
+      - name: ShipperCompanyName
+        description: Nome da empresa transportadora.
+
+      - name: ShipperPhone
+        description: Telefone de contato da transportadora.

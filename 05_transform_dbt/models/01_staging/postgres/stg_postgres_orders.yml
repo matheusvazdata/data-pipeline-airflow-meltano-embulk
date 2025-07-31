@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_postgres_orders
+    description: Tabela de staging que padroniza os dados da tabela "orders" da origem Postgres (Northwind).
+    columns:
+      - name: OrderId
+        description: Identificador único do pedido.
+        tests:
+          - not_null
+          - unique
+
+      - name: CustomerId
+        description: Identificador do cliente que realizou o pedido.
+
+      - name: EmployeeId
+        description: Identificador do funcionário que atendeu o pedido.
+
+      - name: OrderDate
+        description: Data em que o pedido foi realizado.
+
+      - name: RequiredDate
+        description: Data em que o pedido foi solicitado para entrega.
+
+      - name: ShippedDate
+        description: Data em que o pedido foi despachado.
+
+      - name: ShipVia
+        description: Transportadora responsável pela entrega.
+
+      - name: Freight
+        description: Custo do frete associado ao pedido.
+
+      - name: ShipName
+        description: Nome do destinatário ou empresa.
+
+      - name: ShipAddress
+        description: Endereço de entrega.
+
+      - name: ShipCity
+        description: Cidade de entrega.
+
+      - name: ShipRegion
+        description: Região de entrega (quando aplicável).
+
+      - name: ShipPostalCode
+        description: Código postal de entrega.
+
+      - name: ShipCountry
+        description: País de entrega.

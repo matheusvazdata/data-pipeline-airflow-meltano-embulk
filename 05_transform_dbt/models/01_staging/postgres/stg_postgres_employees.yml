@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_postgres_employees
+    description: Tabela de staging que padroniza os dados da tabela "employees" da origem Postgres (Northwind).
+    columns:
+      - name: EmployeeId
+        description: Identificador único do funcionário.
+        tests:
+          - not_null
+          - unique
+
+      - name: FirstName
+        description: Primeiro nome do funcionário.
+
+      - name: LastName
+        description: Sobrenome do funcionário.
+
+      - name: Title
+        description: Título ou cargo do funcionário.
+
+      - name: BirthDate
+        description: Data de nascimento do funcionário.

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_postgres_products
+    description: Tabela de staging que padroniza os dados da tabela "products" da origem Postgres (Northwind).
+    columns:
+      - name: ProductId
+        description: Identificador único do produto.
+        tests:
+          - not_null
+          - unique
+
+      - name: ProductName
+        description: Nome comercial do produto.
+
+      - name: SupplierId
+        description: Identificador do fornecedor do produto.
+
+      - name: CategoryId
+        description: Identificador da categoria do produto.
+
+      - name: QuantityPerUnit
+        description: > 
+          Descrição da quantidade por unidade (ex: 10 caixas de 20).
+
+      - name: UnitPrice
+        description: Preço unitário do produto.
+
+      - name: UnitsInStock
+        description: Quantidade de unidades disponíveis em estoque.
+
+      - name: UnitsOnOrder
+        description: Quantidade de unidades já encomendadas.
+
+      - name: ReorderLevel
+        description: Nível mínimo de estoque antes de reabastecimento.
+
+      - name: Discontinued
+        description: Indica se o produto foi descontinuado.

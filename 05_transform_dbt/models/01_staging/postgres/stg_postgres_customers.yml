@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_postgres_customers
+    description: Tabela de staging que padroniza os dados da tabela "customers" da origem Postgres (Northwind).
+    columns:
+      - name: CustomerId
+        description: Identificador único do cliente.
+        tests:
+          - not_null
+          - unique
+
+      - name: CompanyName
+        description: Nome da empresa do cliente.
+
+      - name: ContactName
+        description: Nome da pessoa de contato.
+
+      - name: ContactTitle
+        description: Título ou cargo da pessoa de contato.
+
+      - name: Address
+        description: Endereço completo do cliente.
+
+      - name: City
+        description: Cidade do cliente.
+
+      - name: Region
+        description: Região administrativa, se aplicável.
+
+      - name: PostalCode
+        description: Código postal (CEP) do cliente.
+
+      - name: Country
+        description: País do cliente.
+
+      - name: Phone
+        description: Número de telefone do cliente.
+
+      - name: Fax
+        description: Número de fax do cliente, se disponível.

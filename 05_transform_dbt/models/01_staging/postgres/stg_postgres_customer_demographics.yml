@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_postgres_customer_demographics
+    description: Tabela de staging que padroniza os dados da tabela "customer_demographics" da origem Postgres (Northwind).
+    columns:
+      - name: CustomerTypeId
+        description: Tipo de cliente usado para classificação demográfica.
+        tests:
+          - not_null
+          - unique
+
+      - name: CustomerDesc
+        description: Descrição associada ao tipo de cliente.

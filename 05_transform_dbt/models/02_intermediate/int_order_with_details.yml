@@ -1,0 +1,61 @@
+# models/02_intermediate/sales/int_order_with_details.yml
+
+version: 2
+
+models:
+  - name: int_order_with_details
+    description: >
+      Modelo intermediário que enriquece os dados de order_details com
+      informações adicionais de produtos e categorias.
+    columns:
+      - name: OrderID
+        description: ID do pedido, chave estrangeira para a tabela de pedidos.
+        tests:
+          - not_null
+
+      - name: ProductID
+        description: ID do produto incluído no pedido.
+        tests:
+          - not_null
+
+      - name: UnitPrice
+        description: Preço unitário do produto no momento da venda.
+
+      - name: Quantity
+        description: Quantidade de unidades do produto vendidas.
+
+      - name: Discount
+        description: Desconto aplicado ao item da venda.
+
+      - name: ProductName
+        description: Nome do produto.
+
+      - name: SupplierID
+        description: ID do fornecedor responsável pelo produto.
+
+      - name: CategoryID
+        description: ID da categoria à qual o produto pertence.
+
+      - name: QuantityPerUnit
+        description: Descrição textual da quantidade por unidade (e.g. "10 boxes x 20 bags").
+
+      - name: ProductUnitPrice
+        description: Preço unitário oficial do produto, conforme tabela de produtos.
+
+      - name: UnitsInStock
+        description: Quantidade atual em estoque.
+
+      - name: UnitsOnOrder
+        description: Quantidade de unidades já encomendadas.
+
+      - name: ReorderLevel
+        description: Nível mínimo de estoque para reabastecimento.
+
+      - name: Discontinued
+        description: Indicador se o produto foi descontinuado.
+
+      - name: CategoryName
+        description: Nome da categoria do produto.
+
+      - name: CategoryDescription
+        description: Descrição da categoria do produto.

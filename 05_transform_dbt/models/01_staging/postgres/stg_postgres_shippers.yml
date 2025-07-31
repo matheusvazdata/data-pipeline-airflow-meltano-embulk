@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: stg_postgres_shippers
+    description: Tabela de staging que padroniza os dados da tabela "shippers" da origem Postgres (Northwind).
+    columns:
+      - name: ShipperId
+        description: Identificador único da transportadora.
+        tests:
+          - not_null
+          - unique
+
+      - name: CompanyName
+        description: Nome da empresa transportadora.
+
+      - name: Phone
+        description: Número de telefone de contato da transportadora.

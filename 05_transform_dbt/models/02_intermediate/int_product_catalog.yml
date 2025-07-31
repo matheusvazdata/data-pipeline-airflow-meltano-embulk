@@ -1,0 +1,80 @@
+# models/02_intermediate/products/int_product_catalog.yml
+
+version: 2
+
+models:
+  - name: int_product_catalog
+    description: >
+      Modelo intermediário que consolida informações de produtos com seus respectivos
+      fornecedores e categorias, formando um catálogo enriquecido para uso posterior.
+    columns:
+      - name: ProductID
+        description: ID do produto.
+        tests:
+          - not_null
+
+      - name: ProductName
+        description: Nome do produto.
+
+      - name: SupplierID
+        description: ID do fornecedor responsável pelo produto.
+
+      - name: CategoryID
+        description: ID da categoria do produto.
+
+      - name: QuantityPerUnit
+        description: Descrição textual da quantidade por unidade.
+
+      - name: UnitPrice
+        description: Preço unitário do produto.
+
+      - name: UnitsInStock
+        description: Quantidade atual em estoque.
+
+      - name: UnitsOnOrder
+        description: Quantidade de unidades encomendadas.
+
+      - name: ReorderLevel
+        description: Nível mínimo para reabastecimento.
+
+      - name: Discontinued
+        description: Indicador se o produto está descontinuado.
+
+      - name: SupplierCompanyName
+        description: Nome da empresa fornecedora.
+
+      - name: SupplierContactName
+        description: Nome do contato no fornecedor.
+
+      - name: SupplierContactTitle
+        description: Cargo do contato no fornecedor.
+
+      - name: SupplierAddress
+        description: Endereço do fornecedor.
+
+      - name: SupplierCity
+        description: Cidade do fornecedor.
+
+      - name: SupplierRegion
+        description: Região do fornecedor.
+
+      - name: SupplierPostalCode
+        description: Código postal do fornecedor.
+
+      - name: SupplierCountry
+        description: País do fornecedor.
+
+      - name: SupplierPhone
+        description: Telefone do fornecedor.
+
+      - name: SupplierFax
+        description: Fax do fornecedor.
+
+      - name: SupplierHomePage
+        description: Página institucional do fornecedor.
+
+      - name: CategoryName
+        description: Nome da categoria do produto.
+
+      - name: CategoryDescription
+        description: Descrição da categoria do produto.

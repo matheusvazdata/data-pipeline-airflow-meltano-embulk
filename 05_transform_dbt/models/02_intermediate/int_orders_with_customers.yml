@@ -1,0 +1,85 @@
+# models/02_intermediate/sales/int_orders_with_customers.yml
+
+version: 2
+
+models:
+  - name: int_orders_with_customers
+    description: >
+      Modelo intermediário que enriquece os dados de pedidos com
+      informações adicionais dos clientes.
+    columns:
+      - name: OrderID
+        description: ID do pedido.
+        tests:
+          - not_null
+
+      - name: CustomerID
+        description: ID do cliente que realizou o pedido.
+        tests:
+          - not_null
+
+      - name: EmployeeID
+        description: ID do funcionário responsável pelo pedido.
+
+      - name: OrderDate
+        description: Data em que o pedido foi realizado.
+
+      - name: RequiredDate
+        description: Data estimada para entrega.
+
+      - name: ShippedDate
+        description: Data de envio do pedido.
+
+      - name: ShipVia
+        description: ID da transportadora.
+
+      - name: Freight
+        description: Valor do frete.
+
+      - name: ShipName
+        description: Nome do destinatário para envio.
+
+      - name: ShipAddress
+        description: Endereço de entrega.
+
+      - name: ShipCity
+        description: Cidade de entrega.
+
+      - name: ShipRegion
+        description: Região de entrega.
+
+      - name: ShipPostalCode
+        description: CEP de entrega.
+
+      - name: ShipCountry
+        description: País de entrega.
+
+      - name: CompanyName
+        description: Nome da empresa do cliente.
+
+      - name: ContactName
+        description: Nome do contato na empresa cliente.
+
+      - name: ContactTitle
+        description: Cargo do contato na empresa cliente.
+
+      - name: CustomerAddress
+        description: Endereço da empresa do cliente.
+
+      - name: CustomerCity
+        description: Cidade do cliente.
+
+      - name: CustomerRegion
+        description: Região do cliente.
+
+      - name: CustomerPostalCode
+        description: CEP do cliente.
+
+      - name: CustomerCountry
+        description: País do cliente.
+
+      - name: CustomerPhone
+        description: Telefone de contato do cliente.
+
+      - name: CustomerFax
+        description: Fax da empresa do cliente.

@@ -1,0 +1,38 @@
+# models/02_intermediate/hr/int_employee_territories.yml
+
+version: 2
+
+models:
+  - name: int_employee_territories
+    description: >
+      Modelo intermediário que relaciona funcionários com os territórios e regiões
+      onde atuam, útil para análises geográficas, de cobertura comercial e segmentações regionais.
+    columns:
+      - name: EmployeeID
+        description: Identificador único do funcionário.
+        tests:
+          - not_null
+
+      - name: LastName
+        description: Sobrenome do funcionário.
+
+      - name: FirstName
+        description: Primeiro nome do funcionário.
+
+      - name: Title
+        description: Cargo do funcionário.
+
+      - name: HireDate
+        description: Data de contratação.
+
+      - name: TerritoryID
+        description: Identificador único do território de atuação.
+
+      - name: TerritoryDescription
+        description: Descrição do território.
+
+      - name: RegionID
+        description: Identificador da região geográfica.
+
+      - name: RegionDescription
+        description: Nome ou descrição da região geográfica.
